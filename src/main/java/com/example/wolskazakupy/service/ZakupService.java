@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ZakupService {
@@ -31,5 +32,9 @@ public class ZakupService {
 
     public void delete(Long zakupId) {
         zakupRepository.deleteById(zakupId);
+    }
+
+    public Optional<Zakup> findFirstByNameAndComment(String name, String comment) {
+        return zakupRepository.findFirstByNameAndComment(name, comment);
     }
 }

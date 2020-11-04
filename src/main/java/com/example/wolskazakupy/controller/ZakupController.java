@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Comparator;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Controller
@@ -24,8 +25,11 @@ public class ZakupController {
     }
 
     @PostMapping("/save")
-    public String save(@ModelAttribute Zakup zakup) {
-        zakupService.save(zakup);
+    public String save(@ModelAttribute Zakup zakup, ModelMap map) {
+        Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
+        if (myZakup.isPresent()) {
+            return "redirect:/?same=yes&zakupId=" + zakup.getId();
+        } else zakupService.save(zakup);
         return "redirect:/";
     }
 
@@ -47,10 +51,35 @@ public class ZakupController {
         return "redirect:";
     }
 
+    @GetMapping("/revert")
+    public String revert(@RequestParam Long zakupId) {
+        System.out.println(zakupId);
+        return "redirect:/update2?zakupId=" + zakupId;
+    }
+
     @PostMapping("/update")
     public String update(@RequestParam Long zakupId, ModelMap map) {
         Zakup zakup = zakupService.findById(zakupId);
+        map.put("update", true);
         map.put("zakup", zakup);
+        map.put("button", "Update");
+
+        map.put("zakupy", zakupService.findAll().stream().sorted(new Comparator<Zakup>() {
+            @Override
+            public int compare(Zakup o1, Zakup o2) {
+                return (int) (o1.getId() - o2.getId());
+            }
+        }).collect(Collectors.toList()));
+
+        return "index";
+    }
+
+    @GetMapping("/update2")
+    public String update2(@RequestParam Long zakupId, ModelMap map) {
+        Zakup zakup = zakupService.findById(zakupId);
+        map.put("update", true);
+        map.put("zakup", zakup);
+        map.put("button", "Update");
 
         map.put("zakupy", zakupService.findAll().stream().sorted(new Comparator<Zakup>() {
             @Override
@@ -63,9 +92,21 @@ public class ZakupController {
     }
 
     @GetMapping("/")
-    public String findAll(ModelMap map) {
-        Zakup zakup = new Zakup();
+    public String findAll(@RequestParam(required = false) String same,
+                          @RequestParam(required = false) Long zakupId,
+                          ModelMap map) {
+        Zakup zakup;
+        if (same != null) {
+            map.put("same", "You can't save the item, name and comment are the same!");
+            zakup = zakupService.findById(zakupId);
+            map.put("button", "Update");
+            map.put("update", true);
+        } else {
+            zakup = new Zakup();
+            map.put("button", "Save");
+        }
         map.put("zakup", zakup);
+
 
         if (zakupService.findAll().size() != 0)
             map.put("zakupy", zakupService.findAll().stream().sorted(new Comparator<Zakup>() {

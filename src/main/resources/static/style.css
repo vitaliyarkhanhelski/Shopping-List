@@ -66,3 +66,48 @@ hr {
 .button {
     padding: 4px 12px;
 }
+
+
+
+a:link {
+    text-decoration: none;
+    color: black;
+
+}
+a:hover {
+    text-decoration: none;
+    color: black;
+}
+a:visited {
+    text-decoration: none;
+    color: black;
+}
+a:active {
+    text-decoration: none;
+    color: black;
+}
+
+.button2 {
+    color: black;
+    padding: 7px 15px;
+    background-color: lightgrey;
+}
+
+.revertLink{
+    color: black;
+    padding: 7px 15px;
+    /*background-color: lightgrey;*/
+    border: 1px solid #5f5d5d;
+    background-color: #fafafa;
+
+}
+
+.same {
+    padding-left: 30px;
+    font-size: 19px;
+    font-weight: bold
+}
+
+.word-break {
+    word-break: break-all;
+}
