@@ -14,6 +14,14 @@ function out11() {
     document.getElementById("b2").style.backgroundColor = "#fafafa"
 }
 
+function over33() {
+    document.getElementById("b3").style.backgroundColor = "#e74444"
+}
+
+function out33() {
+    document.getElementById("b3").style.backgroundColor = "#fafafa"
+}
+
 function over2(el) {
     document.getElementById(el).style.backgroundColor = "#e74444"
 }

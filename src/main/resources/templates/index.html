@@ -42,6 +42,12 @@
                        onmouseout="out11()" id="b2">Revert</a>
                 </span>
 
+                <span style="padding-left: 10px">
+                    <a th:if="${update}" th:href="@{/}" class="revertLink"
+                       onmouseover="over33()"
+                       onmouseout="out33()" id="b3">Clear</a>
+                </span>
+
                 <label class="same" th:text="${same}"></label>
             </div>
         </div>

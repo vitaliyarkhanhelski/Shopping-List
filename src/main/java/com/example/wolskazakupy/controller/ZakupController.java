@@ -26,10 +26,14 @@ public class ZakupController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Zakup zakup, ModelMap map) {
-        Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
-        if (myZakup.isPresent()) {
-            return "redirect:/?same=yes&zakupId=" + zakup.getId();
-        } else zakupService.save(zakup);
+
+        if (zakup.getId() != null) zakupService.save(zakup);
+        else {
+            Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
+            if (myZakup.isPresent()) {
+                return "redirect:/?same=yes&zakupName=" + zakup.getName()+"&zakupComment="+zakup.getComment()+"&zakupInProgress="+zakup.isInProcess();
+            } else zakupService.save(zakup);
+        }
         return "redirect:/";
     }
 
@@ -93,18 +97,22 @@ public class ZakupController {
 
     @GetMapping("/")
     public String findAll(@RequestParam(required = false) String same,
-                          @RequestParam(required = false) Long zakupId,
+                          @RequestParam(required = false) String zakupName,
+                          @RequestParam(required = false) String zakupComment,
+                          @RequestParam(required = false) boolean zakupInProgress,
                           ModelMap map) {
         Zakup zakup;
         if (same != null) {
             map.put("same", "You can't save the item, name and comment are the same!");
-            zakup = zakupService.findById(zakupId);
-            map.put("button", "Update");
-            map.put("update", true);
+//            zakup = zakupService.findById(zakupId);
+            zakup = new Zakup(zakupName,zakupComment,zakupInProgress);
+//            map.put("button", "Update");
+//            map.put("update", true);
         } else {
             zakup = new Zakup();
-            map.put("button", "Save");
+
         }
+        map.put("button", "Save");
         map.put("zakup", zakup);
 
 
