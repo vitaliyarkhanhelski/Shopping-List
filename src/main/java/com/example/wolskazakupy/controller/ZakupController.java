@@ -27,6 +27,7 @@ public class ZakupController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Zakup zakup, ModelMap map) {
+        System.out.println(zakup);
         Long initialId=zakup.getId();
         Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
         if (myZakup.isPresent()) {
@@ -35,7 +36,7 @@ public class ZakupController {
                 return "redirect:/";
             }
             return zakup.getId() != null ? "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment()
-                    + "&zakupInProgress=" + zakup.isInProcess() + "&update=true&zakupId=" :
+                    + "&zakupInProgress=" + zakup.isInProcess() + "&update=true&zakupId="+zakup.getId() :
                     "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess();
         } else {
             zakupService.save(zakup);
