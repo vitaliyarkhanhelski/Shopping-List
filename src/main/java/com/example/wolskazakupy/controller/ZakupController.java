@@ -27,18 +27,20 @@ public class ZakupController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Zakup zakup, ModelMap map) {
+        Long initialId=zakup.getId();
         Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
         if (myZakup.isPresent()) {
             if (zakup.getId() == myZakup.get().getId()) {
                 zakupService.save(zakup);
                 return "redirect:/";
             }
-            return zakup.getId() != null ? "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess()
-                    + "&update=true&zakupId=" + zakup.getId() : "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess();
+            return zakup.getId() != null ? "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment()
+                    + "&zakupInProgress=" + zakup.isInProcess() + "&update=true&zakupId=" :
+                    "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess();
         } else {
             zakupService.save(zakup);
         }
-        return "redirect:/";
+        return initialId != null ? "redirect:/?updated=true" : "redirect:/?saved=true";
     }
 
 
@@ -110,9 +112,9 @@ public class ZakupController {
                           @RequestParam(required = false) String zakupComment,
                           @RequestParam(required = false) boolean zakupInProgress,
                           @RequestParam(required = false) boolean update,
+                          @RequestParam(required = false) boolean updated,
+                          @RequestParam(required = false) boolean saved,
                           ModelMap map) {
-        System.out.println(zakupName);
-        System.out.println(zakupComment);
         Zakup zakup;
         if (same != null) {
             map.put("same", update ? "You can't update the item, the same item is already exist!" : "You can't save the item, the same item is already exist!");
@@ -128,6 +130,8 @@ public class ZakupController {
             map.put("update", true);
         } else {
             map.put("button", "Save");
+            if (updated) map.put("same", "Item was successfully updated");
+            if (saved) map.put("same", "Item was successfully saved");
         }
 
         if (zakupService.findAll().size() != 0) {
