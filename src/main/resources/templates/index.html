@@ -11,14 +11,30 @@
 <body class="d-flex flex-column min-vh-100">
 
 <header>
-    <h1><a href="/" style="color: white">SHOPPING LIST WOLSKA</a></h1>
+    <table style="width: 100%;">
+        <tr>
+            <td style="width: 20%"></td>
+            <td style="width: 60%">
+                <h1 style="text-align: center;">
+                    <a href="/" style="color: white">SHOPPING LIST WOLSKA</a>
+                </h1>
+            </td>
+            <td style="width: 20%; padding-right: 5px">
+                <form style="text-align: right" method="post" action="/find">
+                    <input type="submit" value="Find" id="find" onmouseover="over2(id)" onmouseout="out2(id)">
+                    <input type="text" name="find" required>
+                </form>
+            </td>
+        </tr>
+    </table>
 </header>
-<div class="bg"></div>
-<div class="container pt-3">
 
+<div class="bg"></div>
+
+<div class="container pt-3">
     <form method="post" th:object="${zakup}" th:action="@{/save}">
         <input type="hidden" th:field="*{id}">
-        <div class="form-group col-4">
+        <div class="form-group col-10">
             <label for="name">Provide the name of item:</label>
             <input id="name" class="form-control" type="text" placeholder="Item"
                    th:field="*{name}" required maxlength="255">
@@ -111,6 +127,7 @@
         </li>
     </ul>
 </div>
+
 <footer class="footer">
     Developed by Vitaliy Arkhanhelski
 </footer>
@@ -119,10 +136,7 @@
     <h6><a href="#" style="color: white">Go Up</a></h6>
 </footer>
 
-
-    <a href="#" style="padding-left:73px; position: absolute;bottom: 0;"><img src="arrow.png"  style="width: 17%;"></a>
-
-
+<a href="#" style="padding-left:73px; position: absolute;bottom: 0;"><img src="arrow.png" style="width: 17%;"></a>
 
 
 <script src="js.js"></script>

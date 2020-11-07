@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -27,8 +28,7 @@ public class ZakupController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Zakup zakup, ModelMap map) {
-        System.out.println(zakup);
-        Long initialId=zakup.getId();
+        Long initialId = zakup.getId();
         Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
         if (myZakup.isPresent()) {
             if (zakup.getId() == myZakup.get().getId()) {
@@ -36,7 +36,7 @@ public class ZakupController {
                 return "redirect:/";
             }
             return zakup.getId() != null ? "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment()
-                    + "&zakupInProgress=" + zakup.isInProcess() + "&update=true&zakupId="+zakup.getId() :
+                    + "&zakupInProgress=" + zakup.isInProcess() + "&update=true&zakupId=" + zakup.getId() :
                     "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess();
         } else {
             zakupService.save(zakup);
@@ -61,6 +61,33 @@ public class ZakupController {
         } else {
             return "redirect:";
         }
+    }
+
+
+    @PostMapping("/find")
+    public String find(@RequestParam String find, ModelMap map) {
+        map.put("button", "Save");
+        Zakup zakup = new Zakup();
+        map.put("zakup", zakup);
+
+        List<Zakup> list = new ArrayList<>();
+        List<Zakup> allList = getSortedZakupList();
+        if (allList.isEmpty()) {
+            map.put("result", "No results found");
+        } else {
+            for (Zakup i : allList) {
+                if (i.getName().toLowerCase().contains(find.toLowerCase())) {
+                    list.add(i);
+                }
+            }
+        }
+        if (list.isEmpty()) {
+            map.put("result", "No results found");
+        } else {
+            map.put("zakupy", list);
+        }
+
+        return "index";
     }
 
 
