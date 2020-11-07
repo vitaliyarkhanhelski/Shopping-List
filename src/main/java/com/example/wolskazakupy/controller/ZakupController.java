@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -26,16 +27,20 @@ public class ZakupController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Zakup zakup, ModelMap map) {
-
-        if (zakup.getId() != null) zakupService.save(zakup);
-        else {
-            Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
-            if (myZakup.isPresent()) {
-                return "redirect:/?same=yes&zakupName=" + zakup.getName()+"&zakupComment="+zakup.getComment()+"&zakupInProgress="+zakup.isInProcess();
-            } else zakupService.save(zakup);
+        Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
+        if (myZakup.isPresent()) {
+            if (zakup.getId() == myZakup.get().getId()) {
+                zakupService.save(zakup);
+                return "redirect:/";
+            }
+            return zakup.getId() != null ? "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess()
+                    + "&update=true&zakupId=" + zakup.getId() : "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess();
+        } else {
+            zakupService.save(zakup);
         }
         return "redirect:/";
     }
+
 
     @PostMapping("/in-progress")
     public String inProgress(@RequestParam Long zakupId) {
@@ -46,20 +51,35 @@ public class ZakupController {
             zakup.setInProcess(true);
         }
         zakupService.save(zakup);
-        return "redirect:";
+        List<Zakup> list = getSortedZakupList();
+        Zakup newZakup = zakupService.findById(zakupId);
+        if (list.indexOf(newZakup) != 0) {
+            return "redirect:/#place" + zakupId;
+        } else {
+            return "redirect:";
+        }
     }
+
 
     @PostMapping("/delete")
     public String delete(@RequestParam Long zakupId) {
+        List<Zakup> list = getSortedZakupList();
+        Zakup zakup = zakupService.findById(zakupId);
         zakupService.delete(zakupId);
-        return "redirect:";
+        int n = list.indexOf(zakup);
+        if (n != 0) {
+            return "redirect:/#place" + list.get(n - 1).getId();
+        } else {
+            return "redirect:";
+        }
     }
+
 
     @GetMapping("/revert")
     public String revert(@RequestParam Long zakupId) {
-        System.out.println(zakupId);
         return "redirect:/update2?zakupId=" + zakupId;
     }
+
 
     @PostMapping("/update")
     public String update(@RequestParam Long zakupId, ModelMap map) {
@@ -67,16 +87,10 @@ public class ZakupController {
         map.put("update", true);
         map.put("zakup", zakup);
         map.put("button", "Update");
-
-        map.put("zakupy", zakupService.findAll().stream().sorted(new Comparator<Zakup>() {
-            @Override
-            public int compare(Zakup o1, Zakup o2) {
-                return (int) (o1.getId() - o2.getId());
-            }
-        }).collect(Collectors.toList()));
-
+        map.put("zakupy", getSortedZakupList());
         return "index";
     }
+
 
     @GetMapping("/update2")
     public String update2(@RequestParam Long zakupId, ModelMap map) {
@@ -84,47 +98,54 @@ public class ZakupController {
         map.put("update", true);
         map.put("zakup", zakup);
         map.put("button", "Update");
+        map.put("zakupy", getSortedZakupList());
+        return "index";
+    }
 
-        map.put("zakupy", zakupService.findAll().stream().sorted(new Comparator<Zakup>() {
+
+    @GetMapping("/")
+    public String findAll(@RequestParam(required = false) String same,
+                          @RequestParam(required = false) Long zakupId,
+                          @RequestParam(required = false) String zakupName,
+                          @RequestParam(required = false) String zakupComment,
+                          @RequestParam(required = false) boolean zakupInProgress,
+                          @RequestParam(required = false) boolean update,
+                          ModelMap map) {
+        System.out.println(zakupName);
+        System.out.println(zakupComment);
+        Zakup zakup;
+        if (same != null) {
+            map.put("same", update ? "You can't update the item, the same item is already exist!" : "You can't save the item, the same item is already exist!");
+            zakup = zakupId != null ? new Zakup(zakupId, zakupName, zakupComment, zakupInProgress) :
+                    new Zakup(zakupName, zakupComment, zakupInProgress);
+        } else {
+            zakup = new Zakup();
+        }
+        map.put("zakup", zakup);
+
+        if (update) {
+            map.put("button", "Update");
+            map.put("update", true);
+        } else {
+            map.put("button", "Save");
+        }
+
+        if (zakupService.findAll().size() != 0) {
+            map.put("zakupy", getSortedZakupList());
+        } else {
+            map.put("result", "Stocks are replenished. Nothing is needed");
+        }
+        return "index";
+    }
+
+
+    public List<Zakup> getSortedZakupList() {
+        return zakupService.findAll().stream().sorted(new Comparator<Zakup>() {
             @Override
             public int compare(Zakup o1, Zakup o2) {
                 return (int) (o1.getId() - o2.getId());
             }
-        }).collect(Collectors.toList()));
-
-        return "index";
-    }
-
-    @GetMapping("/")
-    public String findAll(@RequestParam(required = false) String same,
-                          @RequestParam(required = false) String zakupName,
-                          @RequestParam(required = false) String zakupComment,
-                          @RequestParam(required = false) boolean zakupInProgress,
-                          ModelMap map) {
-        Zakup zakup;
-        if (same != null) {
-            map.put("same", "You can't save the item, name and comment are the same!");
-//            zakup = zakupService.findById(zakupId);
-            zakup = new Zakup(zakupName,zakupComment,zakupInProgress);
-//            map.put("button", "Update");
-//            map.put("update", true);
-        } else {
-            zakup = new Zakup();
-
-        }
-        map.put("button", "Save");
-        map.put("zakup", zakup);
-
-
-        if (zakupService.findAll().size() != 0)
-            map.put("zakupy", zakupService.findAll().stream().sorted(new Comparator<Zakup>() {
-                @Override
-                public int compare(Zakup o1, Zakup o2) {
-                    return (int) (o1.getId() - o2.getId());
-                }
-            }).collect(Collectors.toList()));
-        else map.put("result", "Stocks are replenished. Nothing is needed");
-        return "index";
+        }).collect(Collectors.toList());
     }
 
 }

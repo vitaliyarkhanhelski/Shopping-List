@@ -34,10 +34,6 @@ function over3(el) {
     document.getElementById(el).style.backgroundColor = "#264bba"
 }
 
-// function reload() {
-//     $("#form").submit();
-// }
-
 function confirm_delete() {
     return confirm('Are you sure? The item will be completed and deleted');
 }

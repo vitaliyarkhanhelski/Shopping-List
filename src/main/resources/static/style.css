@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: "Syne Mono";
     background: black;
@@ -6,7 +10,7 @@ body {
     position: relative;
     min-height: 20vh;
     margin: 0;
-    padding-bottom: 20px;
+    padding-bottom: 0px;
     box-sizing: border-box;
 }
 
@@ -31,8 +35,8 @@ header {
     font-weight: bold;
 }
 
-footer {
-    text-align: right;
+.footer {
+
     background-color: black;
     font-weight: bold;
     position: absolute;
@@ -41,6 +45,16 @@ footer {
     padding-left: 5px;
     padding-right: 5px;
     height: 20px;
+}
+
+.footer2 {
+
+    background-color: black;
+    font-weight: bold;
+    position: absolute;
+    bottom: 0px;
+    padding: 12px 15px 26px;
+    height: 30px;
 }
 
 h1 {
@@ -67,21 +81,21 @@ hr {
     padding: 4px 12px;
 }
 
-
-
 a:link {
     text-decoration: none;
     color: black;
-
 }
+
 a:hover {
     text-decoration: none;
     color: black;
 }
+
 a:visited {
     text-decoration: none;
     color: black;
 }
+
 a:active {
     text-decoration: none;
     color: black;
@@ -93,13 +107,11 @@ a:active {
     background-color: lightgrey;
 }
 
-.revertLink{
+.revertLink {
     color: black;
-    padding: 7px 15px;
-    /*background-color: lightgrey;*/
+    padding: 7px 14px;
     border: 1px solid #5f5d5d;
     background-color: #fafafa;
-
 }
 
 .same {

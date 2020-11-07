@@ -43,7 +43,7 @@
                 </span>
 
                 <span style="padding-left: 10px">
-                    <a th:if="${update}" th:href="@{/}" class="revertLink"
+                    <a th:href="@{/}" class="revertLink"
                        onmouseover="over33()"
                        onmouseout="out33()" id="b3">Clear</a>
                 </span>
@@ -51,8 +51,6 @@
                 <label class="same" th:text="${same}"></label>
             </div>
         </div>
-
-
     </form>
 
     <hr>
@@ -62,7 +60,7 @@
             <table style="width: 100%">
                 <thead>
                 <tr>
-                    <th colspan="3">
+                    <th colspan="3" th:id="'place' + ${zakup.id}">
 
                         <h4 class="word-break" th:text="${zakup.name}"></h4>
                     </th>
@@ -113,9 +111,19 @@
         </li>
     </ul>
 </div>
-<footer class="mt-auto">
+<footer class="footer">
     Developed by Vitaliy Arkhanhelski
 </footer>
+
+<footer class="footer2">
+    <h6><a href="#" style="color: white">Go Up</a></h6>
+</footer>
+
+
+    <a href="#" style="padding-left:73px; position: absolute;bottom: 0;"><img src="arrow.png"  style="width: 17%;"></a>
+
+
+
 
 <script src="js.js"></script>
 </body>
