@@ -32,8 +32,16 @@
 <div class="bg"></div>
 
 <div class="container pt-3">
-    <form method="post" th:object="${zakup}" th:action="@{/save}">
+
+    <!--    <form method="post" action="/save2" enctype="multipart/form-data">-->
+    <!--        <input type="file" name="file">-->
+    <!--        <input type="submit" value="Save File">-->
+    <!--    </form>-->
+
+    <form method="post" th:object="${zakup}" th:action="@{/save}" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}">
+        <input type="hidden" th:field="*{imgLink}">
+
         <div class="form-group col-10">
             <label for="name">Provide the name of item:</label>
             <input id="name" class="form-control" type="text" placeholder="Item"
@@ -44,12 +52,17 @@
             <input id="comment" class="form-control" type="text" placeholder="Comment"
                    th:field="*{comment}" maxlength="255">
         </div>
+        <div class="form-group" style="padding-top: 5px; padding-bottom: 5px">
+            <label for="check">Upload image (optional):</label>
+            <input id="check" type="file" name="file" onchange="imageValidation()">
+        </div>
+
         <div class="form-group">
             <div class="form-check">
                 <input class="form-check-input" id="exampleCheck1" type="checkbox" placeholder="sdffsd"
                        th:field="*{inProcess}">
                 <label class="form-check-label" for="exampleCheck1">In progress</label>
-                <input type="submit" th:value="${button}" class="button" onmouseover="over1()" onmouseout="out1()"
+                <input type="submit" th:value="${button}" class="saveButton" onmouseover="over1()" onmouseout="out1()"
                        id="b1">
 
                 <span style="padding-left: 10px">
@@ -89,12 +102,17 @@
                     </td>
                 </tr>
                 <tr>
+                    <td colspan="3" style="text-align:center;padding-bottom: 10px">
+                        <img th:if="${zakup.imgLink!=''}" th:src="'/images/'+${zakup.imgLink}">
+                    </td>
+                </tr>
+                <tr>
                     <td style="width: 140px">
                         <form method="post" th:action="@{/in-progress(zakupId=${zakup.id})}">
                             <button type="submit" th:if="${zakup.inProcess}" class="red">In
                                 Progress
                             </button>
-                            <button type="submit" th:id="'but' + ${zakup.id}" th:if="${!zakup.inProcess}" class="button"
+                            <button type="submit" th:id="'but' + ${zakup.id}" th:if="${!zakup.inProcess}" class="myButton2"
                                     onmouseover="over2(id)"
                                     onmouseout="out2(id)">
                                 In Progress
@@ -104,7 +122,7 @@
                     </td>
                     <td>
                         <form method="post" th:action="@{/update(zakupId=${zakup.id})}">
-                            <button type="submit" th:id="'up' + ${zakup.id}" class="button" onmouseover="over3(id)"
+                            <button type="submit" th:id="'up' + ${zakup.id}" class="myButton2" onmouseover="over3(id)"
                                     onmouseout="out2(id)">
                                 Update
                             </button>
@@ -112,7 +130,7 @@
                     </td>
                     <td style="text-align: right">
                         <form method="post" th:action="@{/delete(zakupId=${zakup.id})}">
-                            <button type="submit" th:id="'d' + ${zakup.id}" class="button" onmouseover="over2(id)"
+                            <button type="submit" th:id="'d' + ${zakup.id}" class="myButton2" onmouseover="over2(id)"
                                     onmouseout="out2(id)"
                                     onclick="return confirm_delete()">
                                 Done
@@ -129,7 +147,8 @@
 </div>
 
 <footer class="footer">
-    <a href="https://www.linkedin.com/in/vitaliyarkhanhelski/" style="color: white">Developed by Vitaliy Arkhanhelski</a>
+    <a href="https://www.linkedin.com/in/vitaliyarkhanhelski/" style="color: white">Developed by Vitaliy
+        Arkhanhelski</a>
 </footer>
 
 <footer class="footer2">

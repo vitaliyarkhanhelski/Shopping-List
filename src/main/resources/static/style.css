@@ -10,7 +10,7 @@ body {
     position: relative;
     min-height: 20vh;
     margin: 0;
-    padding-bottom: 0px;
+    padding-bottom: 10px;
     box-sizing: border-box;
 }
 
@@ -80,6 +80,21 @@ hr {
     padding: 4px 12px;
 }
 
+.myButton {
+    padding: 4px 12px;
+    background-color: #d2d2d2;
+}
+
+.saveButton {
+    padding: 4px 12px;
+    background-color: white;
+}
+
+.myButton2 {
+    padding: 4px 12px;
+    background-color: #a9a9a9;
+}
+
 a:link {
     text-decoration: none;
     color: black;
@@ -110,7 +125,7 @@ a:active {
     color: black;
     padding: 7px 14px;
     border: 1px solid #5f5d5d;
-    background-color: #fafafa;
+    background-color: #d2d2d2;
 }
 
 .same {
@@ -127,3 +142,9 @@ a:active {
 /*    border: 1px solid white;*/
 /*    border-collapse: collapse;*/
 /*}*/
+
+img {
+    box-shadow: 4px 4px 27px 4px rgb(0, 0, 0);
+    max-width: 550px;
+    height: auto;
+}

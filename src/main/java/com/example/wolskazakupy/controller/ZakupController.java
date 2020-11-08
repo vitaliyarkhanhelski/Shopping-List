@@ -5,10 +5,8 @@ import com.example.wolskazakupy.service.ZakupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -26,18 +24,22 @@ public class ZakupController {
         this.zakupService = zakupService;
     }
 
+
     @PostMapping("/save")
-    public String save(@ModelAttribute Zakup zakup, ModelMap map) {
+    public String save(@ModelAttribute Zakup zakup, @RequestParam(name = "file", required = false) MultipartFile file) {
+
         Long initialId = zakup.getId();
         Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
-        if (myZakup.isPresent()) {
+        if (myZakup.isPresent() && !zakup.getComment().isEmpty()) {
             if (zakup.getId() == myZakup.get().getId()) {
-                zakupService.save(zakup);
+                zakupService.save(zakup, file);
                 return "redirect:/";
             }
             return zakup.getId() != null ? "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment()
                     + "&zakupInProgress=" + zakup.isInProcess() + "&update=true&zakupId=" + zakup.getId() :
                     "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess();
+        } else if (file.getSize()!=0) {
+            zakupService.save(zakup, file);
         } else {
             zakupService.save(zakup);
         }
