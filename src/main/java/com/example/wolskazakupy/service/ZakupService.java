@@ -30,6 +30,9 @@ public class ZakupService {
 
     public void save(Zakup zakup, MultipartFile file) {
 
+        File directory = new File("images/");
+        if (!directory.exists()) directory.mkdir();
+
         if (!zakup.getImgLink().isEmpty()) {
             Path pathToDelete = Paths.get("images/" + zakup.getImgLink());
             try {
