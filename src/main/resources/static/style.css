@@ -82,12 +82,12 @@ hr {
 
 .myButton {
     padding: 4px 12px;
-    background-color: #d2d2d2;
+    background-color: #a9a9a9;
 }
 
 .saveButton {
     padding: 4px 12px;
-    background-color: white;
+    background-color: #a9a9a9;
 }
 
 .myButton2 {
@@ -125,7 +125,7 @@ a:active {
     color: black;
     padding: 7px 14px;
     border: 1px solid #5f5d5d;
-    background-color: #d2d2d2;
+    background-color: #a9a9a9;
 }
 
 .same {

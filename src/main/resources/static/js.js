@@ -3,7 +3,7 @@ function over1() {
 }
 
 function out1() {
-    document.getElementById("b1").style.backgroundColor = "white"
+    document.getElementById("b1").style.backgroundColor = "#a9a9a9"
 }
 
 function over11() {
@@ -11,7 +11,7 @@ function over11() {
 }
 
 function out11() {
-    document.getElementById("b2").style.backgroundColor = "#d2d2d2"
+    document.getElementById("b2").style.backgroundColor = "#a9a9a9"
 }
 
 function over33() {
@@ -19,7 +19,7 @@ function over33() {
 }
 
 function out33() {
-    document.getElementById("b3").style.backgroundColor = "#d2d2d2"
+    document.getElementById("b3").style.backgroundColor = "#a9a9a9"
 }
 
 function over2(el) {
