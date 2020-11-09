@@ -134,4 +134,17 @@ public class ZakupService {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline") //attachent;filename=\"" + targetFile.getName() + "\"
                 .body(resource);
     }
+
+    public void deleteImage(Long id) {
+        Zakup zakup = zakupRepository.findById(id).get();
+        Path pathToDelete = Paths.get("images/" + zakup.getImgLink());
+        try {
+            Files.deleteIfExists(pathToDelete);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        zakup.setImgLink("");
+        zakupRepository.save(zakup);
+
+    }
 }

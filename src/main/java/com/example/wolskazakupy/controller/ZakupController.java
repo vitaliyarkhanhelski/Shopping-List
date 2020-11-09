@@ -27,18 +27,60 @@ public class ZakupController {
 
     @PostMapping("/save")
     public String save(@ModelAttribute Zakup zakup, @RequestParam(name = "file", required = false) MultipartFile file) {
-
+//        System.out.println(zakup.getComment().isEmpty());
         Long initialId = zakup.getId();
         Optional<Zakup> myZakup = zakupService.findFirstByNameAndComment(zakup.getName(), zakup.getComment());
-        if (myZakup.isPresent() && !zakup.getComment().isEmpty()) {
-            if (zakup.getId() == myZakup.get().getId()) {
-                zakupService.save(zakup, file);
-                return "redirect:/";
+//        if (myZakup.isPresent() && !zakup.getComment().isEmpty()) {
+        if (myZakup.isPresent()) {
+
+//
+//            Long a = zakup.getId();
+//            Long b = myZakup.get().getId();
+//            System.out.println(a);
+//            System.out.println(b);
+//            System.out.println(a.equals(b));
+
+            if (zakup.getId() != null) {
+                if (zakup.getId().equals(myZakup.get().getId())) {
+                    System.out.println("Hello");
+//                System.out.println("Hello");
+                    if (file.getSize() != 0) {
+                        zakupService.save(zakup, file);
+                    } else {
+                        zakupService.save(zakup);
+                    }
+                    return "redirect:/?updated=true";
+                }
             }
+            if (zakup.getComment().isEmpty() || myZakup.get().getComment().isEmpty()) {
+                System.out.println("Case1");
+                System.out.println(zakup.getComment());
+                System.out.println(myZakup.get().getComment());
+                if (file.getSize() != 0) {
+                    zakupService.save(zakup, file);
+                } else {
+                    zakupService.save(zakup);
+                }
+                return "redirect:/?saved=true";
+            }
+            if (zakup.getName().equals(myZakup.get().getName()) && !zakup.getComment().equals(myZakup.get().getComment())) {
+//                    System.out.println("Case2");
+                if (file.getSize() != 0) {
+                    zakupService.save(zakup, file);
+                } else {
+                    zakupService.save(zakup);
+                }
+                return "redirect:/?saved=true";
+            }
+
+//            System.out.println(zakup.getComment().isEmpty());
+//            if (!zakup.getComment().isEmpty() || !myZakup.get().getComment().isEmpty()) {
+//                System.out.println("Hello");
             return zakup.getId() != null ? "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment()
-                    + "&zakupInProgress=" + zakup.isInProcess() + "&update=true&zakupId=" + zakup.getId() :
+                    + "&zakupInProgress=" + zakup.isInProcess() + "&update=true&zakupId=" + zakup.getId() + "&imageLink=" + zakup.getImgLink() :
                     "redirect:/?same=yes&zakupName=" + zakup.getName() + "&zakupComment=" + zakup.getComment() + "&zakupInProgress=" + zakup.isInProcess();
-        } else if (file.getSize()!=0) {
+//            }
+        } else if (file.getSize() != 0) {
             zakupService.save(zakup, file);
         } else {
             zakupService.save(zakup);
@@ -113,9 +155,37 @@ public class ZakupController {
     }
 
 
+    @GetMapping("/deleteImage")
+    public String deleteImage(@RequestParam Long id,
+                              @RequestParam String name,
+                              @RequestParam String comment,
+                              @RequestParam boolean inProcess,
+                              @RequestParam String imgLink,
+                              ModelMap map) {
+//        System.out.println(id);
+//        System.out.println(name);
+//        System.out.println(comment);
+//        System.out.println(inProcess);
+//        System.out.println(imgLink);
+        Zakup zakup = new Zakup(id, name, comment, "", inProcess);
+        zakupService.deleteImage(id);
+
+        map.put("update", true);
+        map.put("zakup", zakup);
+        map.put("button", "Update");
+        map.put("zakupy", getSortedZakupList());
+
+        return "index";
+    }
+
+
     @PostMapping("/update")
     public String update(@RequestParam Long zakupId, ModelMap map) {
+
         Zakup zakup = zakupService.findById(zakupId);
+        if (!zakup.getImgLink().isEmpty()) {
+            map.put("image", true);
+        }
         map.put("update", true);
         map.put("zakup", zakup);
         map.put("button", "Update");
@@ -140,15 +210,17 @@ public class ZakupController {
                           @RequestParam(required = false) Long zakupId,
                           @RequestParam(required = false) String zakupName,
                           @RequestParam(required = false) String zakupComment,
+                          @RequestParam(required = false) String imageLink,
                           @RequestParam(required = false) boolean zakupInProgress,
                           @RequestParam(required = false) boolean update,
                           @RequestParam(required = false) boolean updated,
                           @RequestParam(required = false) boolean saved,
                           ModelMap map) {
         Zakup zakup;
+//        System.out.println(imageLink);
         if (same != null) {
             map.put("same", update ? "You can't update the item, the same item is already exist!" : "You can't save the item, the same item is already exist!");
-            zakup = zakupId != null ? new Zakup(zakupId, zakupName, zakupComment, zakupInProgress) :
+            zakup = zakupId != null ? new Zakup(zakupId, zakupName, zakupComment, imageLink, zakupInProgress) :
                     new Zakup(zakupName, zakupComment, zakupInProgress);
         } else {
             zakup = new Zakup();
@@ -158,6 +230,9 @@ public class ZakupController {
         if (update) {
             map.put("button", "Update");
             map.put("update", true);
+            if (!imageLink.isEmpty()) {
+                map.put("image", true);
+            }
         } else {
             map.put("button", "Save");
             if (updated) map.put("same", "Item was successfully updated");

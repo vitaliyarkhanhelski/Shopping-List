@@ -33,11 +33,6 @@
 
 <div class="container pt-3">
 
-    <!--    <form method="post" action="/save2" enctype="multipart/form-data">-->
-    <!--        <input type="file" name="file">-->
-    <!--        <input type="submit" value="Save File">-->
-    <!--    </form>-->
-
     <form method="post" th:object="${zakup}" th:action="@{/save}" enctype="multipart/form-data">
         <input type="hidden" th:field="*{id}">
         <input type="hidden" th:field="*{imgLink}">
@@ -53,7 +48,7 @@
                    th:field="*{comment}" maxlength="255">
         </div>
         <div class="form-group" style="padding-top: 5px; padding-bottom: 5px">
-            <label for="check">Upload image (optional):</label>
+            <label for="check">Upload new image or update existing (optional):</label>
             <input id="check" type="file" name="file" onchange="imageValidation()">
         </div>
 
@@ -77,7 +72,17 @@
                        onmouseout="out33()" id="b3">Clear</a>
                 </span>
 
-                <label class="same" th:text="${same}"></label>
+                <span style="padding-left: 10px">
+                    <a th:if="${image}"
+                       th:href="@{/deleteImage(id=${zakup.id},name=${zakup.name},comment=${zakup.comment},imgLink=${zakup.imgLink},inProcess=${zakup.inProcess})}"
+                       class="revertLink"
+                       onmouseover="over44()"
+                       onmouseout="out44()" id="b4">Delete Image</a>
+                </span>
+
+                <label th:if="${update}" style="padding-top: 10px; color: #a9a9a9" class="same"
+                       th:text="${same}"></label>
+                <label th:if="!${update}" style="color: #a9a9a9" class="same" th:text="${same}"></label>
             </div>
         </div>
     </form>
@@ -112,7 +117,8 @@
                             <button type="submit" th:if="${zakup.inProcess}" class="red">In
                                 Progress
                             </button>
-                            <button type="submit" th:id="'but' + ${zakup.id}" th:if="${!zakup.inProcess}" class="myButton2"
+                            <button type="submit" th:id="'but' + ${zakup.id}" th:if="${!zakup.inProcess}"
+                                    class="myButton2"
                                     onmouseover="over2(id)"
                                     onmouseout="out2(id)">
                                 In Progress
