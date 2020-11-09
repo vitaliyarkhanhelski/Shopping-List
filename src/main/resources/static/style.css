@@ -144,7 +144,7 @@ a:active {
 /*}*/
 
 img {
-    box-shadow: 4px 4px 27px 4px rgb(0, 0, 0);
-    max-width: 500px;
+    box-shadow: 6px 6px 25px 5px rgb(0, 0, 0);
+    max-width: 550px;
     height: auto;
 }
