@@ -20,7 +20,6 @@ public class Zakup{
 
     private String comment;
 
-//    @Column(nullable = true)
     private String imgLink;
 
     private boolean inProcess;

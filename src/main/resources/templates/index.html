@@ -94,7 +94,7 @@
             <table style="width: 100%">
                 <thead>
                 <tr>
-                    <th colspan="3" th:id="'place' + ${zakup.id}">
+                    <th colspan="5" th:id="'place' + ${zakup.id}">
 
                         <h4 class="word-break" th:text="${zakup.name}"></h4>
                     </th>
@@ -102,12 +102,12 @@
                 </thead>
                 <tbody>
                 <tr>
-                    <td colspan="3">
+                    <td colspan="5">
                         <span class="word-break" th:text="${zakup.comment}"></span>
                     </td>
                 </tr>
                 <tr>
-                    <td colspan="3" style="text-align:center;padding-bottom: 10px">
+                    <td colspan="5" style="text-align:center;padding-bottom: 10px">
                         <img th:if="${zakup.imgLink!=''}" th:src="'/images/'+${zakup.imgLink}">
                     </td>
                 </tr>
@@ -134,7 +134,27 @@
                             </button>
                         </form>
                     </td>
-                    <td style="text-align: right">
+
+
+                    <td style="text-align: right; width: 70px">
+                        <form method="post" th:action="@{/down(zakupId=${zakup.id})}">
+                            <button type="submit" th:id="'down' + ${zakup.id}" class="myButton2" onmouseover="over2(id)"
+                                    onmouseout="out2(id)">
+                                Down↓
+                            </button>
+                        </form>
+                    </td>
+
+                    <td style="text-align: right; width: 65px">
+                        <form method="post" th:action="@{/up(zakupId=${zakup.id})}">
+                            <button type="submit" th:id="'upp' + ${zakup.id}" class="myButton2" onmouseover="over2(id)"
+                                    onmouseout="out2(id)">
+                                Up↑
+                            </button>
+                        </form>
+                    </td>
+
+                    <td style="text-align: right; width: 75px">
                         <form method="post" th:action="@{/delete(zakupId=${zakup.id})}">
                             <button type="submit" th:id="'d' + ${zakup.id}" class="myButton2" onmouseover="over2(id)"
                                     onmouseout="out2(id)"
